@@ -1,0 +1,37 @@
+{
+  "name": "video-tool",
+  "version": "1.0.0",
+  "private": true,
+  "productName": "HoodMagic-sd",
+  "description": "HoodMagic-sd Seedance video generation desktop tool",
+  "author": "HoodMagic Team",
+  "type": "module",
+  "main": "out/main/index.js",
+  "scripts": {
+    "dev": "electron-vite dev --config electron.vite.config.ts",
+    "build": "tsc --noEmit -p tsconfig.json && electron-vite build --config electron.vite.config.ts",
+    "typecheck": "tsc --noEmit -p tsconfig.json",
+    "package": "pnpm build && electron-builder --dir --config electron-builder.yml",
+    "dist": "pnpm build && electron-builder --config electron-builder.yml"
+  },
+  "dependencies": {
+    "@hoodmagic/provider-adapters": "workspace:*",
+    "@hoodmagic/storage": "workspace:*",
+    "@hoodmagic/video-core": "workspace:*",
+    "ali-oss": "^6.23.0",
+    "lucide-react": "^0.555.0",
+    "react": "^19.2.0",
+    "react-dom": "^19.2.0"
+  },
+  "devDependencies": {
+    "@types/node": "24.10.4",
+    "@types/react": "^19.2.7",
+    "@types/react-dom": "^19.2.3",
+    "@vitejs/plugin-react-swc": "^3.9.0",
+    "electron": "41.2.1",
+    "electron-builder": "26.8.1",
+    "electron-vite": "5.0.0",
+    "typescript": "~5.8.3",
+    "vite": "npm:rolldown-vite@7.3.0"
+  }
+}

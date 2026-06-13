@@ -1,0 +1,18 @@
+{
+  "provider": "hoodmagic",
+  "baseUrl": "https://your-api.example.com",
+  "apiKey": "YOUR_API_KEY_HERE",
+  "defaultModel": "doubao-seedance-2-0-fast-260128",
+  "objectStorage": {
+    "enabled": false,
+    "vendor": "aliyun-oss",
+    "bucket": "your-public-bucket",
+    "region": "your-region",
+    "endpoint": "https://your-object-storage-endpoint.example.com",
+    "publicDomain": "https://your-public-domain.example.com",
+    "stsEndpointUrl": "https://your-sts-service.example.com/temporary-credentials",
+    "accessKeyId": "YOUR_ACCESS_KEY_ID_HERE",
+    "accessKeySecret": "YOUR_ACCESS_KEY_SECRET_HERE",
+    "securityToken": "YOUR_STS_TOKEN_HERE"
+  }
+}

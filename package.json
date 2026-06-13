@@ -1,0 +1,23 @@
+{
+  "name": "hoodmagic-sd-video-tool",
+  "version": "1.0.0",
+  "private": true,
+  "description": "HoodMagic video generation desktop tool for Seedance 2.0",
+  "license": "MIT",
+  "engines": {
+    "node": ">=24.11.1"
+  },
+  "packageManager": "pnpm@10.27.0",
+  "scripts": {
+    "dev": "pnpm --filter video-tool dev",
+    "build": "pnpm --filter video-tool build",
+    "test": "pnpm --filter @hoodmagic/video-core test && pnpm --filter @hoodmagic/provider-adapters test",
+    "typecheck": "pnpm --filter video-tool typecheck",
+    "package": "pnpm --filter video-tool dist"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "2.2.4",
+    "typescript": "~5.8.3",
+    "vitest": "^3.2.4"
+  }
+}

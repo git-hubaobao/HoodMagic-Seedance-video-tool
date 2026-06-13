@@ -1,0 +1,23 @@
+appId: com.hoodmagic.video-tool
+productName: HoodMagic-sd
+directories:
+  output: release
+files:
+  - out/**
+  - package.json
+extraResources:
+  - from: build/icon.ico
+    to: icon.ico
+asar: true
+afterPack: scripts/after-pack.cjs
+win:
+  icon: build/icon.ico
+  signAndEditExecutable: false
+  target:
+    - nsis
+  artifactName: HoodMagic-sd-${version}-${arch}.${ext}
+nsis:
+  oneClick: false
+  allowToChangeInstallationDirectory: true
+  createDesktopShortcut: true
+  createStartMenuShortcut: true
