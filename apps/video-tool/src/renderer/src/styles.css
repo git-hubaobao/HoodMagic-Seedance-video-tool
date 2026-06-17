@@ -3506,8 +3506,85 @@ textarea:focus {
 }
 
 .dream-reference-list {
-  max-height: 96px;
-  overflow-y: auto;
+  display: flex;
+  flex-wrap: nowrap;
+  gap: 8px;
+  width: min(352px, 100%);
+  max-height: none;
+  overflow-x: auto;
+  overflow-y: visible;
+  overscroll-behavior-x: contain;
+  padding: 0 2px 4px;
+  scroll-snap-type: x proximity;
+  scrollbar-width: thin;
+}
+
+.dream-reference-list::-webkit-scrollbar {
+  height: 6px;
+}
+
+.dream-reference-list::-webkit-scrollbar-thumb {
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--text) 18%, transparent);
+}
+
+.dream-reference-chip {
+  position: relative;
+  display: block;
+  flex: 0 0 82px;
+  width: 82px;
+  min-width: 82px;
+  height: 82px;
+  min-height: 82px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  scroll-snap-align: start;
+}
+
+.dream-reference-chip img,
+.dream-reference-chip video,
+.dream-reference-chip > span {
+  width: 82px;
+  height: 82px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  object-fit: cover;
+  background: #050806;
+}
+
+.dream-reference-chip > span {
+  display: grid;
+  place-items: center;
+  color: var(--muted);
+  font-size: 11px;
+  font-weight: 900;
+}
+
+.dream-reference-chip .icon-button {
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  z-index: 3;
+  width: 22px;
+  height: 22px;
+  border: 0;
+  border-radius: 999px;
+  background: rgba(0, 0, 0, 0.58);
+  color: #f8fff9;
+}
+
+.dream-reference-chip .icon-button:hover:not(:disabled) {
+  background: color-mix(in srgb, var(--danger) 74%, #000);
+}
+
+.dream-reference-chip .reference-role-select {
+  position: absolute;
+  right: 5px;
+  bottom: 5px;
+  left: 5px;
+  z-index: 2;
+  width: auto;
 }
 
 .conversation-move-select .select-menu-button {
@@ -3552,6 +3629,27 @@ textarea:focus {
   min-height: 30px;
   padding: 0 8px;
   font-size: 11px;
+}
+
+.dream-reference-chip .reference-role-select .select-menu-button {
+  height: 22px;
+  min-height: 22px;
+  padding: 0 5px;
+  border-color: rgba(255, 255, 255, 0.18);
+  border-radius: 999px;
+  background: rgba(0, 0, 0, 0.58);
+  color: #f8fff9;
+  font-size: 10px;
+}
+
+.dream-reference-chip .reference-role-select .select-menu-button svg {
+  width: 12px;
+  height: 12px;
+  color: rgba(248, 255, 249, 0.82);
+}
+
+.dream-reference-chip .reference-role-select .select-menu-list {
+  min-width: 126px;
 }
 
 .asset-filter-select {

@@ -243,10 +243,6 @@ const toSelectedMedia = (asset: AssetItem): SelectedMedia => ({
   ...(asset.url ? { previewUrl: asset.url } : {})
 })
 
-const getTaskTime = (task: VideoTask): string => new Date(task.createdAt).toLocaleString()
-
-const getTaskPrompt = (task: VideoTask): string => task.prompt || task.request?.prompt || '未命名视频任务'
-
 const getTaskVideoSrc = (task: VideoTask): string | undefined => task.localFileUrl ?? task.videoUrl
 
 const getAssetTypeFromFile = (file: File): AssetType | undefined => {
@@ -530,22 +526,18 @@ export function GenerateView({
             <div className="dream-task-grid">
               {visibleTasks.slice(0, 12).map((task) => {
                 const videoSrc = getTaskVideoSrc(task)
+                const canCancel = canCancelVideoTask(task)
                 return (
                   <article className="dream-task-card" key={task.id}>
                     <div className="task-message-top">
-                      <div>
-                        <strong>{task.status === 'succeeded' ? text.taskSucceeded : text.taskSubmitted}</strong>
-                        <span>{task.model} · {task.request?.duration ?? '-'}s · {task.request?.resolution ?? '-'}</span>
-                      </div>
+                      <strong>{task.status === 'succeeded' ? text.taskSucceeded : text.taskSubmitted}</strong>
                       <StatusBadge status={task.status} />
                     </div>
-                    <p>{getTaskPrompt(task)}</p>
                     {videoSrc ? (
                       <video className="video-preview result-video-card" controls preload="metadata" src={videoSrc} />
                     ) : (
                       <div className="video-placeholder">{task.progress ?? text.taskPending}</div>
                     )}
-                    {task.videoUrl ? <small>{text.shortLinkNotice}</small> : null}
                     {task.error ? <p className="error-line">{task.error.message}</p> : null}
                     <div className="task-actions">
                       <button
@@ -566,14 +558,11 @@ export function GenerateView({
                         <Download size={15} />
                         <span>{text.download}</span>
                       </button>
-                      <button
-                        className="secondary-button danger-button"
-                        disabled={!canCancelVideoTask(task)}
-                        onClick={() => void onCancelTask(task.id)}
-                        type="button"
-                      >
-                        {text.cancel}
-                      </button>
+                      {canCancel ? (
+                        <button className="secondary-button danger-button" onClick={() => void onCancelTask(task.id)} type="button">
+                          {text.cancel}
+                        </button>
+                      ) : null}
                     </div>
                   </article>
                 )
@@ -600,34 +589,19 @@ export function GenerateView({
               <strong>{text.dropUpload}</strong>
             </div>
           ) : null}
-          <div className="dream-prompt-row">
-            <button className="dream-reference-tile" onClick={() => void openAssetLibrary()} type="button">
-              <ImagePlus size={18} />
-              <span>{text.uploadHint}</span>
-            </button>
-            <textarea
-              onChange={(event) => handlePromptChange(event.target.value)}
-              onKeyDown={handleKeyDown}
-              onPaste={handlePaste}
-              placeholder={text.guidance}
-              value={prompt}
-            />
-          </div>
-
           {selectedMedia.length > 0 ? (
-            <div className="dream-reference-list">
-              {selectedMedia.map((item, index) => (
-                <div className="dream-reference-chip" key={item.id}>
+            <div className="dream-reference-list" aria-label={language === 'zh' ? '已选参考素材' : 'Selected reference assets'}>
+              {selectedMedia.map((item) => (
+                <div className="dream-reference-chip" key={item.id} title={item.name}>
                   {item.type === 'Image' && item.previewUrl ? (
                     <img alt={item.name} src={item.previewUrl} />
+                  ) : item.type === 'Video' && item.previewUrl ? (
+                    <video muted preload="metadata" src={item.previewUrl} />
                   ) : (
                     <span>{text.typeLabel[item.type]}</span>
                   )}
-                  <div>
-                    <strong>@{text.typeLabel[item.type]}{index + 1}</strong>
-                    <small>{item.name}</small>
-                  </div>
                   <SelectMenu
+                    ariaLabel={language === 'zh' ? '参考素材角色' : 'Reference role'}
                     className="reference-role-select"
                     onChange={(value) => updateRole(item.id, value as VideoContentRole)}
                     options={[
@@ -642,15 +616,29 @@ export function GenerateView({
                       ...(item.type === 'Audio' ? [{ value: 'reference_audio', label: text.roleLabel.reference_audio }] : [])
                     ]}
                     placement="top"
+                    title={item.name}
                     value={item.role}
                   />
                   <button className="icon-button" onClick={() => removeMedia(item.id)} title="Remove" type="button">
-                    <X size={13} />
+                    <X size={12} />
                   </button>
                 </div>
               ))}
             </div>
           ) : null}
+          <div className="dream-prompt-row">
+            <button className="dream-reference-tile" onClick={() => void openAssetLibrary()} type="button">
+              <ImagePlus size={18} />
+              <span>{text.uploadHint}</span>
+            </button>
+            <textarea
+              onChange={(event) => handlePromptChange(event.target.value)}
+              onKeyDown={handleKeyDown}
+              onPaste={handlePaste}
+              placeholder={text.guidance}
+              value={prompt}
+            />
+          </div>
 
           <div className="dream-toolbar">
             <SelectMenu
