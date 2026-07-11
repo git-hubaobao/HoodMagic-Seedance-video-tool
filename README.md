@@ -1,6 +1,6 @@
 # HoodMagic Seedance Video Tool
 
-HoodMagic Seedance Video Tool 是一个桌面端 Seedance 视频生成工具，支持第三方API模型调用、Volcengine Ark API、真人素材库 asset:// 工作流，以及本地文件上传到对象存储后创建 Seedance 素材。
+HoodMagic Seedance Video Tool 是一个桌面端 Seedance 视频生成工具，支持 HoodMagic 自有 API、Volcengine Ark API、素材库 asset:// 工作流，以及本地文件上传到对象存储后创建 Seedance 素材。
 
 > 本仓库只包含可开源代码、文档、示例配置和构建脚本。请勿提交任何真实 API Key、AccessKey、Secret、Token、Bucket 私有配置、本地数据库、任务历史或素材缓存。
 
@@ -17,12 +17,12 @@ HoodMagic Seedance Video Tool 是一个桌面端 Seedance 视频生成工具，�
 - asset:// 引用
 - 对象存储上传
 - 阿里云 OSS
-- 火山 TOS
-- 腾讯 COS
+- 火山 TOS 预留/支持情况
+- 腾讯 COS 预留/支持情况
 - 任务轮询
 - 任务历史
 - 下载视频
-- 深色/浅色 UI
+- 深色 UI
 - 本地配置
 
 ## 技术栈
@@ -71,7 +71,7 @@ pnpm build
 
 应用当前通过本地设置页保存服务商配置，支持：
 
-- 第三方模型 API：用于第三方视频生成接口与素材库接口。
+- HoodMagic API：用于 HoodMagic 自有视频生成接口与素材库接口。
 - Volcengine Ark API：用于火山方舟 Seedance 官方视频生成接口。
 
 请在桌面应用的设置页填写你自己的服务地址和 API Key。本仓库中的 ".env.example" 与 "config.example.json" 只提供占位示例，不包含真实可用凭证。

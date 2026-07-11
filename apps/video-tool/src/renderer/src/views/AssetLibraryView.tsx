@@ -404,6 +404,21 @@ export function AssetLibraryView({
     return <div className="asset-thumb asset-thumb-file">{getAssetIcon(asset.assetType)}</div>
   }
 
+  useEffect(() => {
+    if (!uploadDialog) {
+      return
+    }
+
+    const closeUploadOnEscape = (event: globalThis.KeyboardEvent): void => {
+      if (event.key === 'Escape') {
+        closeUploadDialog()
+      }
+    }
+
+    window.addEventListener('keydown', closeUploadOnEscape)
+    return () => window.removeEventListener('keydown', closeUploadOnEscape)
+  }, [uploadDialog])
+
   return (
     <div className="asset-library-layout asset-library-compact">
       <aside className="panel group-sidebar compact-group-sidebar">

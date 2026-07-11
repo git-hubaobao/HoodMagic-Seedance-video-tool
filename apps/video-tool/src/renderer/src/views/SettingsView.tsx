@@ -1,4 +1,4 @@
-import { CheckCircle2, Plus, Save, Trash2 } from 'lucide-react'
+import { Boxes, CheckCircle2, Cloud, Plus, Save, ServerCog, Trash2 } from 'lucide-react'
 import type { JSX } from 'react'
 import { useMemo, useState } from 'react'
 
@@ -123,12 +123,15 @@ export function SettingsView({ api, settings, onSave, onObjectStorageSaved, onTo
     <div className="settings-layout settings-hub">
       <aside className="settings-nav">
         <button aria-pressed={selectedSection === 'api'} onClick={() => setSelectedSection('api')} type="button">
+          <ServerCog size={15} />
           {'\u914d\u7f6e\u8bbe\u7f6e'}
         </button>
         <button aria-pressed={selectedSection === 'models'} onClick={() => setSelectedSection('models')} type="button">
+          <Boxes size={15} />
           模型管理
         </button>
         <button aria-pressed={selectedSection === 'storage'} onClick={() => setSelectedSection('storage')} type="button">
+          <Cloud size={15} />
           对象存储
         </button>
       </aside>

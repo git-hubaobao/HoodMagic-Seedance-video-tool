@@ -10,7 +10,7 @@ import {
   X
 } from 'lucide-react'
 import type { ClipboardEvent, DragEvent, JSX, KeyboardEvent } from 'react'
-import { useMemo, useRef, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 
 import type {
   AssetGroup,
@@ -516,6 +516,21 @@ export function GenerateView({
     }
   }
 
+  useEffect(() => {
+    if (!mentionOpen) {
+      return
+    }
+
+    const closeReferencePicker = (event: globalThis.KeyboardEvent): void => {
+      if (event.key === 'Escape') {
+        setMentionOpen(false)
+      }
+    }
+
+    window.addEventListener('keydown', closeReferencePicker)
+    return () => window.removeEventListener('keydown', closeReferencePicker)
+  }, [mentionOpen])
+
   return (
     <div className="dream-generate-shell">
       <section className="dream-message-area">
@@ -632,6 +647,7 @@ export function GenerateView({
               <span>{text.uploadHint}</span>
             </button>
             <textarea
+              aria-label={text.guidance}
               onChange={(event) => handlePromptChange(event.target.value)}
               onKeyDown={handleKeyDown}
               onPaste={handlePaste}
@@ -675,17 +691,31 @@ export function GenerateView({
             <button aria-pressed={watermark} className="toggle-pill" onClick={() => setWatermark((value) => !value)} type="button">
               {text.watermark}
             </button>
-            <button className="icon-button" onClick={() => setShowAdvanced((value) => !value)} title={text.advanced} type="button">
+            <button
+              aria-controls="generation-advanced-options"
+              aria-expanded={showAdvanced}
+              className="icon-button"
+              onClick={() => setShowAdvanced((value) => !value)}
+              title={text.advanced}
+              type="button"
+            >
               <Settings2 size={15} />
             </button>
-            <button className="dream-send-button" disabled={!canSubmit} onClick={() => void submit()} title={text.submit} type="button">
+            <button
+              aria-busy={submitting}
+              className="dream-send-button"
+              disabled={!canSubmit}
+              onClick={() => void submit()}
+              title={text.submit}
+              type="button"
+            >
               {submitting ? <RefreshCw size={18} /> : <Send size={18} />}
               <span>{text.submit}</span>
             </button>
           </div>
 
           {showAdvanced ? (
-            <div className="advanced-strip">
+            <div className="advanced-strip" id="generation-advanced-options">
               <label className="field">
                 <span>{language === 'zh' ? '随机种子' : 'Seed'}</span>
                 <input onChange={(event) => setSeed(event.target.value)} placeholder={text.seedPlaceholder} value={seed} />

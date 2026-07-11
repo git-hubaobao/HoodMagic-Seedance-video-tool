@@ -51,7 +51,7 @@ const providerLabel = (provider: VideoToolSettings['activeProvider'] | string | 
 const copy = {
   zh: {
     product: 'Seedance 视频生成',
-    newChat: '+ 新建聊天',
+    newChat: '新建聊天',
     newProject: '新建项目',
     createProject: '创建项目',
     cancel: '取消',
@@ -103,7 +103,7 @@ const copy = {
   },
   en: {
     product: 'Seedance 视频生成',
-    newChat: '+ New chat',
+    newChat: 'New chat',
     newProject: 'New project',
     createProject: 'Create project',
     cancel: 'Cancel',
@@ -185,6 +185,38 @@ export default function App(): JSX.Element {
   const visibleTasks = activeConversation
     ? tasks.filter((task) => task.conversationId === activeConversation.id)
     : tasks
+
+  useEffect(() => {
+    const closeConversationMenu = (event: PointerEvent): void => {
+      if (!(event.target instanceof Element) || !event.target.closest('.conversation-menu')) {
+        setOpenConversationMenuId(undefined)
+        setOpenConversationMoveMenuId(undefined)
+      }
+    }
+
+    window.addEventListener('pointerdown', closeConversationMenu)
+    return () => window.removeEventListener('pointerdown', closeConversationMenu)
+  }, [])
+
+  useEffect(() => {
+    const closeOverlay = (event: globalThis.KeyboardEvent): void => {
+      if (event.key !== 'Escape') {
+        return
+      }
+
+      if (projectDialogOpen) {
+        setProjectDialogOpen(false)
+      } else if (settingsOpen) {
+        setSettingsOpen(false)
+      } else {
+        setOpenConversationMenuId(undefined)
+        setOpenConversationMoveMenuId(undefined)
+      }
+    }
+
+    window.addEventListener('keydown', closeOverlay)
+    return () => window.removeEventListener('keydown', closeOverlay)
+  }, [projectDialogOpen, settingsOpen])
 
   const showToast = useCallback((message: string) => {
     setToast(message)
@@ -792,6 +824,7 @@ export default function App(): JSX.Element {
           </div>
         </div>
         <button className="new-chat-button" onClick={() => void createConversation(activeProjectId)} type="button">
+          <Plus size={15} />
           <span>{t.newChat}</span>
         </button>
         <div className="project-list">
@@ -891,11 +924,13 @@ export default function App(): JSX.Element {
 
       <section className="workspace">
         <header className="topbar">
+          <div className="topbar-context">
+            <strong>{t[view]}</strong>
+            <span>{view === 'generate' ? activeConversation?.title || t.untitledTask : t.product}</span>
+          </div>
           <div className="topbar-actions">
-            <span className={providerConfigured ? 'api-pill ready' : 'api-pill missing'}>
-              {providerConfigured ? t.apiReady : t.apiMissing}
-            </span>
             <SelectMenu
+              ariaLabel={language === 'zh' ? '选择 API 服务商' : 'Select API provider'}
               className="topbar-select provider-select"
               onChange={(value) => void patchSettings({ activeProvider: value as VideoToolSettings['activeProvider'] })}
               options={[
@@ -905,6 +940,7 @@ export default function App(): JSX.Element {
               value={settings?.activeProvider ?? 'hoodmagic'}
             />
             <SelectMenu
+              ariaLabel={language === 'zh' ? '选择界面主题' : 'Select appearance theme'}
               className="topbar-select"
               onChange={(value) => void patchSettings({ appearanceTheme: value as VideoToolSettings['appearanceTheme'] })}
               options={[
@@ -914,6 +950,7 @@ export default function App(): JSX.Element {
               value={settings?.appearanceTheme ?? 'dark'}
             />
             <SelectMenu
+              ariaLabel={language === 'zh' ? '选择界面语言' : 'Select interface language'}
               className="topbar-select"
               onChange={(value) => void patchSettings({ interfaceLanguage: value as InterfaceLanguage })}
               options={[
@@ -929,10 +966,11 @@ export default function App(): JSX.Element {
           </div>
         </header>
 
-        {loading ? (
-          <div className="loading-pane">{t.loading}</div>
-        ) : settings ? (
-          <>
+        <main className="view-stage" key={view}>
+          {loading ? (
+            <div aria-busy="true" className="loading-pane">{t.loading}</div>
+          ) : settings ? (
+            <>
             {view === 'generate' && (
               <GenerateView
                 api={api}
@@ -976,10 +1014,11 @@ export default function App(): JSX.Element {
                 onRefreshTasks={loadTasks}
               />
             )}
-          </>
-        ) : (
-          <div className="loading-pane">{t.unavailable}</div>
-        )}
+            </>
+          ) : (
+            <div className="loading-pane">{t.unavailable}</div>
+          )}
+        </main>
       </section>
 
       {projectDialogOpen ? (
@@ -1031,8 +1070,8 @@ export default function App(): JSX.Element {
           >
             <header className="settings-modal-header">
               <h2>{t.apiSettings}</h2>
-              <button className="secondary-button" onClick={() => setSettingsOpen(false)} type="button">
-                {t.close}
+              <button aria-label={t.close} className="icon-button modal-close-button" onClick={() => setSettingsOpen(false)} title={t.close} type="button">
+                <X size={16} />
               </button>
             </header>
             <div className="settings-modal-body">
@@ -1051,8 +1090,8 @@ export default function App(): JSX.Element {
         </div>
       ) : null}
 
-      {toast ? <div className="toast">{toast}</div> : null}
-      {error ? <div className="toast error-toast">{error}</div> : null}
+      {toast ? <div aria-live="polite" className="toast" role="status">{toast}</div> : null}
+      {error ? <div aria-live="assertive" className="toast error-toast" role="alert">{error}</div> : null}
     </div>
   )
 }
